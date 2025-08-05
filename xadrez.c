@@ -1,37 +1,47 @@
 #include <stdio.h>
 
 int main() {
-    // === Configurações de movimento (definidas no código) ===
-    const int TORRE_PASSOS = 5;   // Torre: 5 casas para a direita
-    const int BISPO_PASSOS = 5;   // Bispo: 5 casas na diagonal cima-direita
-    const int RAINHA_PASSOS = 8;  // Rainha: 8 casas para a esquerda
+    // Número total de movimentos em L que o cavalo fará
+    const int TOTAL_MOVIMENTOS = 5;
 
-    // --- Movimento da Torre: 5 casas para a direita usando "for" ---
-    printf("Movimento da Torre (direita):\n");
-    for (int i = 1; i <= TORRE_PASSOS; i++) {
-        // Cada iteração representa uma casa percorrida
-        printf("Casa %d: Direita\n", i);
+    // Posição inicial (opcional, apenas para contexto)
+    int linha = 8;  // por exemplo, linha do tabuleiro (1 a 8)
+    int coluna = 8; // coluna do tabuleiro (1 a 8)
+
+    printf("Posição inicial do cavalo: (%d, %d)\n\n", linha, coluna);
+
+    // Cada iteração do for representa um movimento em L completo
+    for (int movimento = 1; movimento <= TOTAL_MOVIMENTOS; movimento++) {
+        printf("Movimento %d em L:\n", movimento);
+
+        // Decide o padrão: par -> 2 para baixo, 1 para esquerda; ímpar -> 1 para baixo, 2 para esquerda
+        int passos_baixo = (movimento % 2 == 0) ? 2 : 1;
+        int passos_esquerda = (movimento % 2 == 0) ? 1 : 2;
+
+        // Parte vertical ("Baixo") seguida da horizontal ("Esquerda")
+        int parte = 0; // 0 = fazer o "Baixo", 1 = fazer o "Esquerda"
+
+        // while usado para iterar as duas partes do L (aninhado dentro do for)
+        while (parte < 2) {
+            if (parte == 0) {
+                // Movimento para baixo: usa for para cada passo individual
+                for (int i = 1; i <= passos_baixo; i++) {
+                    printf("  Subpasso: Baixo (%d de %d)\n", i, passos_baixo);
+                    linha++; // atualiza posição (descendo)
+                }
+            } else {
+                // Movimento para a esquerda: usa for para cada passo individual
+                for (int i = 1; i <= passos_esquerda; i++) {
+                    printf("  Subpasso: Esquerda (%d de %d)\n", i, passos_esquerda);
+                    coluna--; // atualiza posição (indo para a esquerda)
+                }
+            }
+            parte++; // vai para a próxima parte do L
+        }
+
+        // Exibe nova posição depois do L completo
+        printf("  -> Nova posição do cavalo após o L %d: (%d, %d)\n\n", movimento, linha, coluna);
     }
-    printf("\n");
-
-    // --- Movimento do Bispo: 5 casas na diagonal cima-direita usando "while" ---
-    printf("Movimento do Bispo (diagonal cima e direita):\n");
-    int contador_bispo = 0;
-    while (contador_bispo < BISPO_PASSOS) {
-        contador_bispo++;
-        // Diagonal representa "Cima, Direita"
-        printf("Casa %d: Cima, Direita\n", contador_bispo);
-    }
-    printf("\n");
-
-    // --- Movimento da Rainha: 8 casas para a esquerda usando "do-while" ---
-    printf("Movimento da Rainha (esquerda):\n");
-    int contador_rainha = 0;
-    do {
-        contador_rainha++;
-        printf("Casa %d: Esquerda\n", contador_rainha);
-    } while (contador_rainha < RAINHA_PASSOS);
-    printf("\n");
 
     return 0;
 }
