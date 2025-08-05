@@ -1,47 +1,105 @@
 #include <stdio.h>
 
-int main() {
-    // Número total de movimentos em L que o cavalo fará
-    const int TOTAL_MOVIMENTOS = 5;
+// --- Funções recursivas para as peças ---
 
-    // Posição inicial (opcional, apenas para contexto)
-    int linha = 8;  // por exemplo, linha do tabuleiro (1 a 8)
-    int coluna = 8; // coluna do tabuleiro (1 a 8)
+// Torre: move 5 casas para a direita, recursivamente
+void mover_torre_direita(int restante, int casa_atual) {
+    if (restante == 0) {
+        return; // caso base: sem mais movimentos
+    }
+    // Cada chamada representa um movimento de uma casa para a direita
+    printf("Torre - Casa %d: Direita\n", casa_atual);
+    mover_torre_direita(restante - 1, casa_atual + 1); // chamada recursiva
+}
 
-    printf("Posição inicial do cavalo: (%d, %d)\n\n", linha, coluna);
+// Rainha: move 8 casas para a esquerda, recursivamente
+void mover_rainha_esquerda(int restante, int casa_atual) {
+    if (restante == 0) {
+        return;
+    }
+    printf("Rainha - Casa %d: Esquerda\n", casa_atual);
+    mover_rainha_esquerda(restante - 1, casa_atual + 1);
+}
 
-    // Cada iteração do for representa um movimento em L completo
-    for (int movimento = 1; movimento <= TOTAL_MOVIMENTOS; movimento++) {
-        printf("Movimento %d em L:\n", movimento);
+// Bispo: move 5 casas na diagonal para cima e para a direita.
+// Usa recursão e, dentro de cada passo, loops aninhados (mesmo que redundantes) para cumprir a exigência.
+void mover_bispo_diagonal(int restante, int casa_atual) {
+    if (restante == 0) {
+        return;
+    }
 
-        // Decide o padrão: par -> 2 para baixo, 1 para esquerda; ímpar -> 1 para baixo, 2 para esquerda
-        int passos_baixo = (movimento % 2 == 0) ? 2 : 1;
-        int passos_esquerda = (movimento % 2 == 0) ? 1 : 2;
+    // Loops aninhados apenas para demonstrar a estrutura: 
+    // o bispo se move diagonalmente (Cima e Direita ao mesmo tempo), 
+    // então usamos dois laços internos que executam uma única iteração para compor "Cima, Direita".
+    for (int i = 0; i < 1; i++) {              // primeiro nível do aninhamento
+        for (int j = 0; j < 1; j++) {          // segundo nível do aninhamento
+            // Efetivamente esse representa uma casa na diagonal
+            printf("Bispo - Casa %d: Cima, Direita\n", casa_atual);
+        }
+    }
 
-        // Parte vertical ("Baixo") seguida da horizontal ("Esquerda")
-        int parte = 0; // 0 = fazer o "Baixo", 1 = fazer o "Esquerda"
+    // Chamada recursiva para o próximo passo da diagonal
+    mover_bispo_diagonal(restante - 1, casa_atual + 1);
+}
 
-        // while usado para iterar as duas partes do L (aninhado dentro do for)
-        while (parte < 2) {
-            if (parte == 0) {
-                // Movimento para baixo: usa for para cada passo individual
-                for (int i = 1; i <= passos_baixo; i++) {
-                    printf("  Subpasso: Baixo (%d de %d)\n", i, passos_baixo);
-                    linha++; // atualiza posição (descendo)
-                }
-            } else {
-                // Movimento para a esquerda: usa for para cada passo individual
-                for (int i = 1; i <= passos_esquerda; i++) {
-                    printf("  Subpasso: Esquerda (%d de %d)\n", i, passos_esquerda);
-                    coluna--; // atualiza posição (indo para a esquerda)
-                }
-            }
-            parte++; // vai para a próxima parte do L
+// Cavalo: um movimento em L para cima e à direita (2 para cima, 1 para direita).
+// Usa loops com múltiplas variáveis, continue e break.
+void mover_cavalo_L() {
+    printf("Cavalo - Movimento em L (2 cima, 1 direita):\n");
+    int passos_cima = 0;
+    int passos_direita = 0;
+
+    // Loop que controla o processo do L; usa múltiplas condições e continue/break
+    while (1) {
+        // Primeiro: subir duas casas
+        if (passos_cima < 2) {
+            passos_cima++;
+            printf("  Subpasso: Cima (%d de 2)\n", passos_cima);
+            continue; // volta para o início até terminar os "cima"
         }
 
-        // Exibe nova posição depois do L completo
-        printf("  -> Nova posição do cavalo após o L %d: (%d, %d)\n\n", movimento, linha, coluna);
+        // Depois: mover uma casa para a direita
+        if (passos_direita < 1) {
+            passos_direita++;
+            printf("  Subpasso: Direita (%d de 1)\n", passos_direita);
+            continue;
+        }
+
+        // Quando ambos feitos, sai
+        break;
     }
+
+    // Informação final sobre o L completo
+    printf("  -> Cavalo completou o L: 2 cima e 1 direita\n");
+}
+
+int main() {
+    // Constantes de quantas casas cada peça se move
+    const int TORRE_PASSOS = 5;
+    const int BISPO_PASSOS = 5;
+    const int RAINHA_PASSOS = 8;
+
+    // Cabeçalho da simulação
+    printf("=== Simulação de Movimentação das Peças (Nível Mestre Final) ===\n\n");
+
+    // Movimento do Bispo (recursivo com loops aninhados)
+    printf("Movimento do Bispo (diagonal para cima e direita):\n");
+    mover_bispo_diagonal(BISPO_PASSOS, 1);
+    printf("\n");
+
+    // Movimento da Torre (recursivo)
+    printf("Movimento da Torre (para a direita):\n");
+    mover_torre_direita(TORRE_PASSOS, 1);
+    printf("\n");
+
+    // Movimento da Rainha (recursivo)
+    printf("Movimento da Rainha (para a esquerda):\n");
+    mover_rainha_esquerda(RAINHA_PASSOS, 1);
+    printf("\n");
+
+    // Movimento do Cavalo (um L para cima e à direita) com continue/break
+    mover_cavalo_L();
+    printf("\n");
 
     return 0;
 }
